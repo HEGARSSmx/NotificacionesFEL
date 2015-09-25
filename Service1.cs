@@ -12,17 +12,83 @@ namespace NotificacionesFEL
 {
     public partial class Service1 : ServiceBase
     {
+        System.Timers.Timer timer = null;
+
         public Service1()
         {
             InitializeComponent();
         }
 
-        protected override void OnStart(string[] args)
+        public void OnDebug() // para debuggear el servicio
         {
+            OnStart(null);
+        }
+        protected override void OnStart(string[] args) // Inicia el Servicio
+        {
+            timer = new System.Timers.Timer(60000);
+            timer.Elapsed += OnTimedEvent;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
         }
 
         protected override void OnStop()
         {
+        }
+
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        { 
+            /*Proceso que se estara ejecutando cada intervalo del timer
+             * Recupera el usuario y contraseña que se desa consultar
+             * si la cantidad de timbres es menor a la especificada, enviara un correo de notificacion
+             * Autor: Guadalupe Garza Moreno
+             * Fecha: 23 Septimbre del 2015
+             */
+            String LcUsername = "HSS1306229V2";
+            String LcPassword = "gPpOueweGuUjo=";
+
+            int cantidadTimbres;
+            cantidadTimbres = getTimbresRestantes(LcUsername, LcPassword);
+            if (cantidadTimbres <= 5000)
+            {
+                SendNotification();
+            }
+        }
+
+        private void SendNotification()
+        {
+
+        }
+
+        public int getTimbresRestantes(String UserName, String Password)
+        {
+            /*Obtenemos los timbres restantes dependiendo del usuario y contraseña que se pasen como paramentros
+             * puede devolver un Error en caso de no poder conectarse al WebService De FEL
+             * Autor: Guadalupe Garza Moreno
+             * Fecha: 23 Septiembre del 2015
+             */
+            int cantidadTimbres = 0;
+            try
+            {
+                ServiceReferenceFEL.WSTFDClient cliente = new ServiceReferenceFEL.WSTFDClient();
+                ServiceReferenceFEL.RespuestaCreditos creditos = cliente.ConsultarCreditos(UserName, Password);
+                if (creditos.OperacionExitosa) // recorremos la lista de paquetes
+                {
+                    foreach (ServiceReferenceFEL.DetallesPaqueteCreditos paquete in creditos.Paquetes)
+                    {
+                        if (paquete.EnUso)
+                        {
+                            cantidadTimbres = paquete.TimbresRestantes;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return cantidadTimbres;
         }
     }
 }
