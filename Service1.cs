@@ -44,8 +44,8 @@ namespace NotificacionesFEL
              * Autor: Guadalupe Garza Moreno
              * Fecha: 23 Septimbre del 2015
              */
-            String LcUsername = "HSS1306229V2";
-            String LcPassword = "gPpOueweGuUjo=";
+            String LcUsername = "test";
+            String LcPassword = "test";
 
             int cantidadTimbres;
             cantidadTimbres = getTimbresRestantes(LcUsername, LcPassword);
@@ -72,14 +72,13 @@ namespace NotificacionesFEL
             {
                 ServiceReferenceFEL.WSTFDClient cliente = new ServiceReferenceFEL.WSTFDClient();
                 ServiceReferenceFEL.RespuestaCreditos creditos = cliente.ConsultarCreditos(UserName, Password);
-                if (creditos.OperacionExitosa) // recorremos la lista de paquetes
+                if (creditos.OperacionExitosa) // recorremos la lista de paquetes y sumamos solo los paquetes vigentes
                 {
                     foreach (ServiceReferenceFEL.DetallesPaqueteCreditos paquete in creditos.Paquetes)
                     {
-                        if (paquete.EnUso)
+                        if (paquete.Vigente)
                         {
-                            cantidadTimbres = paquete.TimbresRestantes;
-                            break;
+                            cantidadTimbres += paquete.TimbresRestantes;
                         }
                     }
                 }
