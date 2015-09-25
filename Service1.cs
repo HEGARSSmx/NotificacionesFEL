@@ -12,6 +12,7 @@ namespace NotificacionesFEL
 {
     public partial class Service1 : ServiceBase
     {
+        Config config = new Config();
         System.Timers.Timer timer = null;
 
         public Service1()
@@ -25,7 +26,7 @@ namespace NotificacionesFEL
         }
         protected override void OnStart(string[] args) // Inicia el Servicio
         {
-            timer = new System.Timers.Timer(60000);
+            timer = new System.Timers.Timer(config.Intervalo);
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -43,13 +44,10 @@ namespace NotificacionesFEL
              * si la cantidad de timbres es menor a la especificada, enviara un correo de notificacion
              * Autor: Guadalupe Garza Moreno
              * Fecha: 23 Septimbre del 2015
-             */
-            String LcUsername = "test";
-            String LcPassword = "test";
-
+             */            
             int cantidadTimbres;
-            cantidadTimbres = getTimbresRestantes(LcUsername, LcPassword);
-            if (cantidadTimbres <= 5000)
+            cantidadTimbres = getTimbresRestantes(config.UsuarioFEL, config.PassFEL);
+            if (cantidadTimbres <= config.TimbresMinimos)
             {
                 SendNotification();
             }
