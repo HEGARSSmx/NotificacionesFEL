@@ -28,6 +28,7 @@ namespace NotificacionesFEL
         {
             try
             {
+                Log.BorraLog(); // Borramos el archivo log para que este limpio para el nuevo inicio del Servicio
                 config = new Config();
                 timer = new System.Timers.Timer(config.Intervalo);
                 timer.Elapsed += OnTimedEvent;
@@ -36,6 +37,7 @@ namespace NotificacionesFEL
             }
             catch (Exception ex)
             {
+                Log.GrabaLog(ex.Message);
                 this.ExitCode = 1906;
                 this.Stop();
                 throw;
@@ -44,17 +46,17 @@ namespace NotificacionesFEL
 
         protected override void OnStop()
         {
-            
+            Log.GrabaLog("Fin del Servivcio");
         }
 
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-        { 
+        {
             /*Proceso que se estara ejecutando cada intervalo del timer
              * Recupera el usuario y contraseña que se desa consultar
              * si la cantidad de timbres es menor a la especificada, enviara un correo de notificacion
              * Autor: Guadalupe Garza Moreno
              * Fecha: 23 Septimbre del 2015
-             */            
+             */
             int cantidadTimbres;
             cantidadTimbres = getTimbresRestantes(config.UsuarioFEL, config.PassFEL);
             if (cantidadTimbres <= config.TimbresMinimos)
@@ -65,6 +67,7 @@ namespace NotificacionesFEL
 
         private void SendNotification()
         {
+            /* */
 
         }
 
@@ -93,6 +96,7 @@ namespace NotificacionesFEL
             }
             catch (Exception ex)
             {
+                Log.GrabaLog("Error en la conexion:" + ex.Message);
                 throw ex;
             }
             return cantidadTimbres;

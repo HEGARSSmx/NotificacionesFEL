@@ -8,13 +8,20 @@ namespace NotificacionesFEL
 {
     static class Log
     {
-           public static void GrabaLog(String Mensaje){
-               System.IO.StreamWriter sw = new System.IO.StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "LogServicio.log",true);
-               String Linea = "Fecha: " + DateTime.Now + "; Mensaje: " + Mensaje;
-               sw.WriteLine(Linea);
-               sw.Flush();
-               sw.Close();
-               sw = null;
-           }
+        static private String ArchivoLog = AppDomain.CurrentDomain.BaseDirectory + "LogServicio.log";
+        public static void GrabaLog(String Mensaje)
+        {
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(ArchivoLog, true);
+            String Linea = "Fecha: " + DateTime.Now + "; Mensaje: " + Mensaje;
+            sw.WriteLine(Linea);
+            sw.Flush();
+            sw.Close();
+            sw = null;
+        }
+
+        public static void BorraLog()
+        {
+            System.IO.File.Delete(ArchivoLog);
+        }
     }
 }

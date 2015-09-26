@@ -42,7 +42,6 @@ namespace NotificacionesFEL
             String ArchivoConfiguracion = AppDomain.CurrentDomain.BaseDirectory + "ConfiguracionServicio.xml";
             if (!File.Exists(ArchivoConfiguracion))
             {
-                Log.GrabaLog("No se encontro el Archivo de Configuracion: " + ArchivoConfiguracion);
                 throw new Exception("No se encontro el archivo de configuracion: " + ArchivoConfiguracion );
             }
             try
@@ -83,8 +82,6 @@ namespace NotificacionesFEL
             }
             catch (Exception ex)
             {
-                
-                Log.GrabaLog(ex.Message);
                 throw new Exception("Error al cargar la configuracion: " + ex.Message);
             }
         }
