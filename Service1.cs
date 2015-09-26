@@ -12,7 +12,7 @@ namespace NotificacionesFEL
 {
     public partial class Service1 : ServiceBase
     {
-        Config config = new Config();
+        Config config;
         System.Timers.Timer timer = null;
 
         public Service1()
@@ -26,15 +26,25 @@ namespace NotificacionesFEL
         }
         protected override void OnStart(string[] args) // Inicia el Servicio
         {
-            timer = new System.Timers.Timer(config.Intervalo);
-            timer.Elapsed += OnTimedEvent;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
+            try
+            {
+                config = new Config();
+                timer = new System.Timers.Timer(config.Intervalo);
+                timer.Elapsed += OnTimedEvent;
+                timer.AutoReset = true;
+                timer.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                this.ExitCode = 1906;
+                this.Stop();
+                throw;
+            }
         }
 
         protected override void OnStop()
         {
+            
         }
 
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
